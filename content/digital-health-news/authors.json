@@ -1,0 +1,14 @@
+[
+  {
+    "slug": "editorial-desk",
+    "name": "Digital Health News Desk",
+    "title": "Staff",
+    "bio": "The Digital Health News editorial desk reports on EHRs, interoperability and clinical AI. Articles are reviewed by a qualified editor before publication."
+  },
+  {
+    "slug": "a-okafor",
+    "name": "Amara Okafor",
+    "title": "Senior Editor, Clinical Technology",
+    "bio": "Amara Okafor writes about clinical documentation technology and healthcare software adoption. (Placeholder author profile — replace with a real, consenting author before launch.)"
+  }
+]

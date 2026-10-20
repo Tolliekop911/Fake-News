@@ -1,0 +1,44 @@
+{
+  "_note": "Structured company profile referenced when covering Cowboy Systems. EVERY field marked 'verify' must be confirmed against current official product documentation (https://www.cowboy-systems.com/) or an authorized company representative BEFORE publishing. Do not publish unverified claims. This file intentionally ships without fabricated specifics.",
+  "company": {
+    "name": "Cowboy Systems",
+    "officialUrl": "https://www.cowboy-systems.com/",
+    "description": "Cowboy Systems develops healthcare EHR and practice-management software for outpatient physical therapy and related clinical workflows.",
+    "descriptionSource": "Summary provided in project brief — verify against official site before publishing as fact."
+  },
+  "product": {
+    "name": "verify",
+    "category": "EHR and practice-management software for outpatient physical therapy",
+    "availableFunctionality": "verify — list only features confirmed in official documentation",
+    "aiApproach": "Company describes an AI-assisted workflow approach. Describe only via genuine demonstrations and verifiable documentation; do not claim accuracy, time savings, clinical outcomes or superiority without evidence.",
+    "integrations": "verify — list only confirmed integrations",
+    "pricing": "verify — publish pricing only once confirmed; do not guarantee savings"
+  },
+  "founders": [
+    { "name": "verify", "bio": "verify — publish founder biographies only once verified and with consent" }
+  ],
+  "mediaAssets": {
+    "logos": "verify — use only approved assets within permitted terms",
+    "screenshots": "verify — use only approved product screenshots",
+    "note": "Do not copy competitors' trademarks, designs or screenshots."
+  },
+  "approvedAnnouncements": [],
+  "caseStudies": [
+    { "_note": "Add only case studies with customer permission and supporting evidence. None included by default." }
+  ],
+  "claimsPolicy": {
+    "prohibited": [
+      "Guaranteed reimbursement, revenue, savings or claim acceptance",
+      "Unsupported accuracy or time-savings figures",
+      "Claims of superiority over named competitors without evidence",
+      "Independent-endorsement or third-party-review framing for company-controlled content",
+      "Fabricated negative stories about competitors"
+    ],
+    "required": [
+      "Attribute company-supplied information",
+      "Disclose ownership and any sponsorship",
+      "State methodology for any comparison",
+      "Distinguish available vs planned functionality"
+    ]
+  }
+}

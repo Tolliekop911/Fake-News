@@ -1,0 +1,23 @@
+{
+  "statuses": [
+    { "key": "idea", "label": "Idea", "public": false },
+    { "key": "researching", "label": "Researching", "public": false },
+    { "key": "outline", "label": "Outline", "public": false },
+    { "key": "draft", "label": "Draft", "public": false },
+    { "key": "fact-check", "label": "Fact-check", "public": false },
+    { "key": "editorial-review", "label": "Editorial review", "public": false },
+    { "key": "approved", "label": "Approved", "public": false },
+    { "key": "scheduled", "label": "Scheduled", "public": false },
+    { "key": "published", "label": "Published", "public": true },
+    { "key": "updated", "label": "Updated or corrected", "public": true }
+  ],
+  "rules": {
+    "humanReviewRequiredBefore": "published",
+    "note": "Factual news and claims about real people or companies require human fact-check and editorial review before 'published'. Only 'published' and 'updated' statuses render to public sites (see PUBLISHABLE in build.js)."
+  },
+  "articleFields": [
+    "headline", "subheadline", "author", "publishedDate", "updatedDate", "image", "imageCredit",
+    "body", "primaryKeyword", "secondaryKeywords", "searchIntent", "sources", "relatedArticles",
+    "internalLinks", "sponsored", "companyContent", "editorialNotes", "revisionHistory"
+  ]
+}

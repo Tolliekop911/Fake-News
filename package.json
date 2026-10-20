@@ -1,0 +1,18 @@
+{
+  "name": "healthtech-media-network",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A reusable static publishing platform powering five healthcare-technology publications.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "serve": "node serve.js",
+    "test": "node tests/run.js",
+    "deploy": "pwsh scripts/deploy-vercel.ps1 -Prod",
+    "clean": "node -e \"import('node:fs').then(fs=>fs.rmSync('dist',{recursive:true,force:true}))\""
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED"
+}
