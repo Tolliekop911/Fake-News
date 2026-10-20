@@ -46,7 +46,7 @@ already-built static directory, there is no remote build step and `dist/index.ht
 
 1. Put the repo on GitHub (from `media-network/` or its parent).
 2. In Vercel, **create 5 projects from the same repo**. For each project set:
-   - **Root Directory:** `media-network` (if the repo root is the parent folder; otherwise leave blank)
+   - **Root Directory:** leave blank (this folder is the repo root). Only set `media-network` if you committed the parent folder as the repo instead.
    - **Framework Preset:** Other
    - **Build Command:** `node build.js`
    - **Output Directory:** `dist/<slug>` — e.g. `dist/pt-practice-journal`
