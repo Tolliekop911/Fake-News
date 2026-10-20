@@ -12,7 +12,6 @@ metaDescription: A practical look at how AI-assisted and ambient documentation t
 primaryKeyword: ai clinical documentation
 secondaryKeywords: [ambient clinical documentation, ai scribe, clinical notes automation]
 searchIntent: informational
-image: /assets/og-default.svg
 imageAlt: Abstract illustration representing clinical documentation
 companyContent: false
 ctaKind: software

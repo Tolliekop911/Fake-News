@@ -29,15 +29,15 @@ export const publications = [
       "Digital Health News covers electronic health records, interoperability, AI-assisted " +
       "clinical documentation and the software transforming how clinics operate.",
     positioning: "Newsroom / industry news desk",
-    logo: { mark: "◢◣", style: "monogram" },
+    logo: { mark: "DHN", style: "monogram" },
     brand: {
       palette: {
-        bg: "#ffffff", surface: "#f4f7fb", ink: "#0b1f3a", muted: "#5a6b84",
-        primary: "#0b63c4", primaryInk: "#ffffff", accent: "#00b3a4", border: "#dce4ef",
+        bg: "#ffffff", surface: "#f6f8f9", ink: "#121a24", muted: "#5c6b78",
+        primary: "#0b6e8c", primaryInk: "#ffffff", accent: "#0b6e8c", border: "#e3e8ec",
       },
-      fonts: { heading: "Libre Franklin", body: "Source Serif 4" },
-      radius: "4px",
-      feel: "crisp broadsheet news",
+      fonts: { heading: "Source Serif 4", body: "Libre Franklin" },
+      radius: "2px",
+      feel: "clean health-news broadsheet",
     },
     categories: [
       { slug: "ehr", name: "EHR & Records" },
@@ -61,12 +61,12 @@ export const publications = [
     logo: { mark: "HTi", style: "wordmark" },
     brand: {
       palette: {
-        bg: "#0e1116", surface: "#171c24", ink: "#f2f5f8", muted: "#9aa6b5",
-        primary: "#ff6a3d", primaryInk: "#120a06", accent: "#ffd23f", border: "#2a313c",
+        bg: "#ffffff", surface: "#f7f6f4", ink: "#17130f", muted: "#6b6459",
+        primary: "#b5401f", primaryInk: "#ffffff", accent: "#b5401f", border: "#e8e4de",
       },
       fonts: { heading: "Space Grotesk", body: "Inter" },
-      radius: "10px",
-      feel: "dark, modern startup editorial",
+      radius: "6px",
+      feel: "modern startup trade magazine",
     },
     categories: [
       { slug: "founders", name: "Founders" },
@@ -89,8 +89,8 @@ export const publications = [
     logo: { mark: "PT", style: "seal" },
     brand: {
       palette: {
-        bg: "#fbfaf7", surface: "#ffffff", ink: "#1c2b24", muted: "#5d6f66",
-        primary: "#2f6d4f", primaryInk: "#ffffff", accent: "#c9892f", border: "#e2ddd1",
+        bg: "#fbfaf6", surface: "#ffffff", ink: "#1b2a22", muted: "#5d6b62",
+        primary: "#2d6a4a", primaryInk: "#ffffff", accent: "#b07d2b", border: "#e6e1d6",
       },
       fonts: { heading: "Fraunces", body: "Newsreader" },
       radius: "2px",
@@ -115,14 +115,14 @@ export const publications = [
       "Applied AI Review evaluates AI documentation and workflow tools for business buyers, with a " +
       "clear eye on limitations, human review and measurable productivity.",
     positioning: "Technical evaluation / buyer review desk",
-    logo: { mark: "/AI/", style: "bracket" },
+    logo: { mark: "AIR", style: "bracket" },
     brand: {
       palette: {
-        bg: "#0b0f1a", surface: "#13182a", ink: "#eef1f8", muted: "#8b94ad",
-        primary: "#7c5cff", primaryInk: "#ffffff", accent: "#19c37d", border: "#262c42",
+        bg: "#ffffff", surface: "#f5f5f8", ink: "#141627", muted: "#5f6276",
+        primary: "#4338ca", primaryInk: "#ffffff", accent: "#4338ca", border: "#e5e5ec",
       },
       fonts: { heading: "Sora", body: "IBM Plex Sans" },
-      radius: "12px",
+      radius: "6px",
       feel: "precise, technical, product-review",
     },
     categories: [
@@ -146,11 +146,11 @@ export const publications = [
     logo: { mark: "MPB", style: "wordmark" },
     brand: {
       palette: {
-        bg: "#ffffff", surface: "#f3f4f6", ink: "#111827", muted: "#4b5563",
-        primary: "#1f4e5f", primaryInk: "#ffffff", accent: "#d08700", border: "#e5e7eb",
+        bg: "#ffffff", surface: "#f4f5f6", ink: "#111827", muted: "#4b5563",
+        primary: "#14506a", primaryInk: "#ffffff", accent: "#14506a", border: "#e4e7ea",
       },
-      fonts: { heading: "Archivo", body: "Lora" },
-      radius: "6px",
+      fonts: { heading: "Lora", body: "Source Sans 3" },
+      radius: "3px",
       feel: "sober business broadsheet",
     },
     categories: [

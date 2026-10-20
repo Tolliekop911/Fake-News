@@ -15,7 +15,7 @@ import {
   headMeta, articleJsonLd, breadcrumbsJsonLd, organizationJsonLd,
   robotsTxt, sitemapXml, absoluteUrl,
 } from "./lib/seo.js";
-import { page, crumbs, card, cta, formatDate } from "./lib/components.js";
+import { page, crumbs, cta, formatDate, hero, latestItem, secItem, story, sectionLabel } from "./lib/components.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = __dirname;
@@ -51,6 +51,8 @@ function loadArticles(pub) {
       newsworthy: data.newsworthy === "true" || data.newsworthy === true,
     });
   }
+  // Each article gets a generated thumbnail unless it supplies a real image.
+  for (const a of articles) a.thumb = a.image || `/assets/thumbs/${a.slug}.svg`;
   // newest first
   articles.sort((a, b) => (b.publishedDate || "").localeCompare(a.publishedDate || ""));
   return { articles, authors };
@@ -78,21 +80,35 @@ function disclosureBox(article) {
 
 // --- page renderers ------------------------------------------------------
 function buildHome(pub, articles) {
-  const [feature, ...rest] = articles;
   const url = absoluteUrl(pub, "/");
   const head =
     headMeta({ pub, title: "", description: pub.description, url, type: "website" }) +
     "\n  " + organizationJsonLd(pub);
-  const featureHtml = feature ? `<section class="card"><div class="body">${card(pub, feature, { feature: true })}</div></section>` : `<p>No articles published yet.</p>`;
-  const side = rest.slice(0, 5).map((a) => card(pub, a)).join("");
-  const more = rest.slice(5).map((a) => card(pub, a)).join("");
-  const main = `
-    <div class="grid lead">
-      <div>${featureHtml}</div>
-      <aside class="grid">${side}</aside>
-    </div>
-    ${more ? `<h2 style="margin:34px 0 14px">More coverage</h2><div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">${more}</div>` : ""}
-  `;
+
+  if (!articles.length) {
+    return page({ pub, headExtra: head, main: `<div class="container"><p>No articles published yet.</p></div>` });
+  }
+
+  const feature = articles[0];
+  const rail = articles.slice(0, 6);             // Latest rail
+  const secondary = articles.slice(1, 5);        // right column
+  // Section rows: one per category that has articles, newest first.
+  const rows = pub.categories.map((cat) => {
+    const inCat = articles.filter((a) => a.category === cat.slug).slice(0, 4);
+    if (!inCat.length) return "";
+    return `<section class="secrow">
+      ${sectionLabel(cat.name)}
+      <div class="storygrid">${inCat.map((a) => story(pub, a)).join("")}</div>
+    </section>`;
+  }).join("");
+
+  const front = `<div class="container"><div class="frontgrid">
+      <div class="rail">${sectionLabel("Latest")}${rail.map((a) => latestItem(pub, a)).join("")}</div>
+      <div class="hero-col">${hero(pub, feature)}</div>
+      <div class="secondary">${sectionLabel("More top stories")}${secondary.map((a) => secItem(pub, a)).join("")}</div>
+    </div></div>`;
+
+  const main = `${front}<div class="container">${rows}</div>`;
   return page({ pub, headExtra: head, main });
 }
 
@@ -101,12 +117,13 @@ function buildCategory(pub, cat, articles) {
   const url = absoluteUrl(pub, `/category/${cat.slug}/`);
   const head = headMeta({ pub, title: cat.name, description: `${cat.name} coverage from ${pub.name}.`, url }) +
     "\n  " + breadcrumbsJsonLd([{ name: pub.name, url: absoluteUrl(pub, "/") }, { name: cat.name, url }]);
-  const main = `
+  const main = `<div class="container">
     ${crumbs([{ name: "Home", href: "/" }, { name: cat.name, href: `/category/${cat.slug}/` }])}
-    <h1>${escapeHtml(cat.name)}</h1>
-    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
-      ${inCat.length ? inCat.map((a) => card(pub, a)).join("") : "<p>No articles in this section yet.</p>"}
-    </div>`;
+    <div class="pagehead"><h1>${escapeHtml(cat.name)}</h1><p>${escapeHtml(cat.name)} coverage from ${escapeHtml(pub.name)}.</p></div>
+    <div class="storygrid">
+      ${inCat.length ? inCat.map((a) => story(pub, a)).join("") : "<p>No articles in this section yet.</p>"}
+    </div>
+  </div>`;
   return page({ pub, headExtra: head, current: cat.slug, main });
 }
 
@@ -133,7 +150,7 @@ function buildArticle(pub, article, all) {
   const authorLink = article.author
     ? `<a href="/authors/${article.author.slug}/">${escapeHtml(article.author.name)}</a>`
     : escapeHtml(article.authorName);
-  const main = `
+  const main = `<div class="container">
     <article class="post">
       ${crumbs([{ name: "Home", href: "/" }, { name: cat ? cat.name : "", href: `/category/${article.category}/` }, { name: article.headline }])}
       ${labelHtml}
@@ -141,13 +158,14 @@ function buildArticle(pub, article, all) {
       <h1>${escapeHtml(article.headline)}</h1>
       ${article.subheadline ? `<p class="dek">${escapeHtml(article.subheadline)}</p>` : ""}
       <div class="byline">By ${authorLink} · Published ${formatDate(article.publishedDate)}${article.updatedDate ? ` · Updated ${formatDate(article.updatedDate)}` : ""}</div>
-      ${article.image ? `<figure><img src="${article.image}" alt="${escapeHtml(article.imageAlt || article.headline)}">${article.imageCredit ? `<figcaption>${escapeHtml(article.imageCredit)}</figcaption>` : ""}</figure>` : ""}
+      <figure><img class="lede-img" src="${article.thumb}" alt="${escapeHtml(article.imageAlt || article.headline)}">${article.imageCredit ? `<figcaption>${escapeHtml(article.imageCredit)}</figcaption>` : ""}</figure>
       ${disclosureBox(article)}
       ${renderBody(pub, article)}
       ${article.sources && article.sources.length ? `<h2>Sources</h2><ol>${article.sources.map((s) => `<li>${escapeHtml(s)}</li>`).join("")}</ol>` : ""}
       ${cta(article.ctaKind || "demo", pub)}
-      ${related.length ? `<h2>Related</h2><div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))">${related.map((a) => card(pub, a)).join("")}</div>` : ""}
-    </article>`;
+      ${related.length ? `<h2 style="margin-top:36px">Related</h2><div class="storygrid">${related.map((a) => story(pub, a)).join("")}</div>` : ""}
+    </article>
+  </div>`;
   return page({ pub, headExtra: head, current: article.category, main });
 }
 
@@ -155,24 +173,25 @@ function buildAuthor(pub, author, articles) {
   const theirs = articles.filter((a) => a.author && a.author.slug === author.slug);
   const url = absoluteUrl(pub, `/authors/${author.slug}/`);
   const head = headMeta({ pub, title: author.name, description: author.bio, url });
-  const main = `
+  const main = `<div class="container">
     ${crumbs([{ name: "Home", href: "/" }, { name: "Authors", href: "/" }, { name: author.name }])}
     <div class="author-hero">
       <div class="avatar">${escapeHtml(author.name.split(" ").map((w) => w[0]).join("").slice(0, 2))}</div>
-      <div><h1>${escapeHtml(author.name)}</h1><p class="meta">${escapeHtml(author.title || "")}</p></div>
+      <div><h1>${escapeHtml(author.name)}</h1><p style="color:var(--muted);margin:4px 0 0">${escapeHtml(author.title || "")}</p></div>
     </div>
-    <p>${escapeHtml(author.bio || "")}</p>
-    <h2 style="margin-top:28px">Articles</h2>
-    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
-      ${theirs.length ? theirs.map((a) => card(pub, a)).join("") : "<p>No published articles yet.</p>"}
-    </div>`;
+    <p style="max-width:680px">${escapeHtml(author.bio || "")}</p>
+    <h2 style="margin-top:30px">Articles</h2>
+    <div class="storygrid">
+      ${theirs.length ? theirs.map((a) => story(pub, a)).join("") : "<p>No published articles yet.</p>"}
+    </div>
+  </div>`;
   return page({ pub, headExtra: head, main });
 }
 
 function buildLegal(pub, slug, title, bodyMd) {
   const url = absoluteUrl(pub, `/${slug}/`);
   const head = headMeta({ pub, title, description: `${title} for ${pub.name}.`, url });
-  const main = `<article class="post">${crumbs([{ name: "Home", href: "/" }, { name: title }])}<h1>${escapeHtml(title)}</h1>${renderMarkdown(bodyMd)}</article>`;
+  const main = `<div class="container"><article class="post">${crumbs([{ name: "Home", href: "/" }, { name: title }])}<h1>${escapeHtml(title)}</h1>${renderMarkdown(bodyMd)}</article></div>`;
   return page({ pub, headExtra: head, main });
 }
 
@@ -242,6 +261,10 @@ function buildPublication(pub) {
   write(path.join(out, "assets", "favicon.svg"), faviconSvg(pub));
   write(path.join(out, "assets", "og-default.svg"), ogImageSvg(pub));
   write(path.join(out, "assets", "cta.js"), ctaTrackingJs());
+  // Per-article generated thumbnails (unless the article supplies a real image).
+  for (const a of published) {
+    if (!a.image) write(path.join(out, "assets", "thumbs", `${a.slug}.svg`), thumbSvg(pub, a));
+  }
 
   // home
   write(path.join(out, "index.html"), buildHome(pub, published));
@@ -281,14 +304,37 @@ function buildPublication(pub) {
   return { slug: pub.slug, articles: published.length, categories: pub.categories.length, authors: authors.length, pages: sitemapEntries.length };
 }
 
-// --- tiny brand SVG assets ----------------------------------------------
+// --- brand SVG assets ----------------------------------------------------
 function faviconSvg(pub) {
   const p = pub.brand.palette;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="10" fill="${p.primary}"/><text x="32" y="42" font-family="sans-serif" font-size="26" font-weight="800" fill="${p.primaryInk}" text-anchor="middle">${escapeHtml(pub.logo.mark.slice(0, 3))}</text></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="8" fill="${p.primary}"/><text x="32" y="42" font-family="Georgia,serif" font-size="24" font-weight="800" fill="${p.primaryInk}" text-anchor="middle">${escapeHtml((pub.logo.mark || pub.name).slice(0, 3))}</text></svg>`;
 }
 function ogImageSvg(pub) {
   const p = pub.brand.palette;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630"><rect width="1200" height="630" fill="${p.bg}"/><rect width="1200" height="12" fill="${p.primary}"/><text x="60" y="300" font-family="sans-serif" font-size="68" font-weight="800" fill="${p.ink}">${escapeHtml(pub.name)}</text><text x="60" y="370" font-family="sans-serif" font-size="32" fill="${p.muted}">${escapeHtml(pub.tagline)}</text><text x="60" y="580" font-family="sans-serif" font-size="22" fill="${p.muted}">A publication of ${escapeHtml(network.owner)}</text></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630"><rect width="1200" height="630" fill="${p.bg}"/><rect width="1200" height="14" fill="${p.primary}"/><text x="64" y="300" font-family="Georgia,serif" font-size="72" font-weight="900" fill="${p.ink}">${escapeHtml(pub.name)}</text><text x="64" y="366" font-family="sans-serif" font-size="30" fill="${p.muted}">${escapeHtml(pub.tagline)}</text><text x="64" y="582" font-family="sans-serif" font-size="22" fill="${p.muted}">A publication of ${escapeHtml(network.owner)}</text></svg>`;
+}
+// Deterministic editorial placeholder art per article (no stock imagery available).
+// A soft two-tone field with simple geometry, seeded by the slug so each differs but stays on-brand.
+function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function thumbSvg(pub, a) {
+  const p = pub.brand.palette;
+  const h = hash(a.slug);
+  const variant = h % 4;
+  const cx = 150 + (h % 400), cy = 80 + ((h >> 3) % 160);
+  const r = 90 + (h % 70);
+  const tag = (pub.categories.find((c) => c.slug === a.category) || {}).name || "";
+  const shapes = [
+    `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${p.primary}" opacity="0.14"/><circle cx="${900 - cx}" cy="${300 - cy}" r="${r * 0.6}" fill="${p.accent}" opacity="0.18"/>`,
+    `<rect x="${cx - 120}" y="${cy - 40}" width="420" height="420" fill="${p.primary}" opacity="0.12" transform="rotate(18 ${cx} ${cy})"/><circle cx="820" cy="90" r="120" fill="${p.accent}" opacity="0.16"/>`,
+    `<path d="M0,${340 - (h % 120)} Q450,${120 + (h % 100)} 960,${300 - (h % 120)} L960,540 L0,540 Z" fill="${p.primary}" opacity="0.13"/><circle cx="${cx}" cy="110" r="70" fill="${p.accent}" opacity="0.18"/>`,
+    `<rect x="0" y="0" width="480" height="540" fill="${p.primary}" opacity="0.10"/><circle cx="700" cy="${cy}" r="${r}" fill="${p.accent}" opacity="0.16"/>`,
+  ];
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice">
+  <rect width="960" height="540" fill="${p.surface}"/>
+  ${shapes[variant]}
+  <rect x="48" y="452" width="${28 + tag.length * 13}" height="40" rx="3" fill="${p.primary}"/>
+  <text x="62" y="479" font-family="sans-serif" font-size="18" font-weight="800" letter-spacing="0.5" fill="${p.primaryInk}">${escapeHtml(tag.toUpperCase())}</text>
+</svg>`;
 }
 function vercelJson() {
   // Static deploy: our pages are /path/index.html, so trailingSlash keeps canonical URLs
