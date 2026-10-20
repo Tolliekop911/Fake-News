@@ -15,7 +15,7 @@ import {
   headMeta, articleJsonLd, breadcrumbsJsonLd, organizationJsonLd,
   robotsTxt, sitemapXml, absoluteUrl,
 } from "./lib/seo.js";
-import { page, crumbs, cta, formatDate, hero, latestItem, secItem, story, sectionLabel } from "./lib/components.js";
+import { page, crumbs, cta, formatDate, hero, secItem, story, sectionLabel } from "./lib/components.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = __dirname;
@@ -90,22 +90,24 @@ function buildHome(pub, articles) {
   }
 
   const feature = articles[0];
-  const rail = articles.slice(0, 6);             // Latest rail
-  const secondary = articles.slice(1, 5);        // right column
-  // Section rows: one per category that has articles, newest first.
+  const lead = articles.slice(1, 3);        // two cards under the hero
+  const secondary = articles.slice(3, 7);   // right column
+  // Section rows: one per category that has articles, first item featured.
   const rows = pub.categories.map((cat) => {
-    const inCat = articles.filter((a) => a.category === cat.slug).slice(0, 4);
+    const inCat = articles.filter((a) => a.category === cat.slug).slice(0, 5);
     if (!inCat.length) return "";
     return `<section class="secrow">
       ${sectionLabel(cat.name)}
-      <div class="storygrid">${inCat.map((a) => story(pub, a)).join("")}</div>
+      <div class="storygrid">${inCat.map((a, i) => story(pub, a, { feat: i === 0 && inCat.length > 2 })).join("")}</div>
     </section>`;
   }).join("");
 
   const front = `<div class="container"><div class="frontgrid">
-      <div class="rail">${sectionLabel("Latest")}${rail.map((a) => latestItem(pub, a)).join("")}</div>
-      <div class="hero-col">${hero(pub, feature)}</div>
-      <div class="secondary">${sectionLabel("More top stories")}${secondary.map((a) => secItem(pub, a)).join("")}</div>
+      <div class="main-col">
+        ${hero(pub, feature)}
+        ${lead.length ? `<div class="leadrow">${lead.map((a) => story(pub, a)).join("")}</div>` : ""}
+      </div>
+      <aside class="secondary">${sectionLabel("More top stories")}${secondary.map((a) => secItem(pub, a)).join("")}</aside>
     </div></div>`;
 
   const main = `${front}<div class="container">${rows}</div>`;
@@ -119,9 +121,9 @@ function buildCategory(pub, cat, articles) {
     "\n  " + breadcrumbsJsonLd([{ name: pub.name, url: absoluteUrl(pub, "/") }, { name: cat.name, url }]);
   const main = `<div class="container">
     ${crumbs([{ name: "Home", href: "/" }, { name: cat.name, href: `/category/${cat.slug}/` }])}
-    <div class="pagehead"><h1>${escapeHtml(cat.name)}</h1><p>${escapeHtml(cat.name)} coverage from ${escapeHtml(pub.name)}.</p></div>
+    <div class="pagehead"><div class="eyebrow">Section</div><h1>${escapeHtml(cat.name)}</h1><p>${escapeHtml(cat.name)} coverage from ${escapeHtml(pub.name)}.</p></div>
     <div class="storygrid">
-      ${inCat.length ? inCat.map((a) => story(pub, a)).join("") : "<p>No articles in this section yet.</p>"}
+      ${inCat.length ? inCat.map((a, i) => story(pub, a, { feat: i === 0 && inCat.length > 2 })).join("") : "<p>No articles in this section yet.</p>"}
     </div>
   </div>`;
   return page({ pub, headExtra: head, current: cat.slug, main });
@@ -154,7 +156,7 @@ function buildArticle(pub, article, all) {
     <article class="post">
       ${crumbs([{ name: "Home", href: "/" }, { name: cat ? cat.name : "", href: `/category/${article.category}/` }, { name: article.headline }])}
       ${labelHtml}
-      <span class="kicker">${escapeHtml(cat ? cat.name : "")}</span>
+      <span class="kicker-pill">${escapeHtml(cat ? cat.name : "")}</span>
       <h1>${escapeHtml(article.headline)}</h1>
       ${article.subheadline ? `<p class="dek">${escapeHtml(article.subheadline)}</p>` : ""}
       <div class="byline">By ${authorLink} · Published ${formatDate(article.publishedDate)}${article.updatedDate ? ` · Updated ${formatDate(article.updatedDate)}` : ""}</div>
@@ -329,11 +331,13 @@ function thumbSvg(pub, a) {
     `<path d="M0,${340 - (h % 120)} Q450,${120 + (h % 100)} 960,${300 - (h % 120)} L960,540 L0,540 Z" fill="${p.primary}" opacity="0.13"/><circle cx="${cx}" cy="110" r="70" fill="${p.accent}" opacity="0.18"/>`,
     `<rect x="0" y="0" width="480" height="540" fill="${p.primary}" opacity="0.10"/><circle cx="700" cy="${cy}" r="${r}" fill="${p.accent}" opacity="0.16"/>`,
   ];
+  const gx = h % 2 ? p.primary : p.accent;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice">
-  <rect width="960" height="540" fill="${p.surface}"/>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="${p.surface}"/><stop offset="1" stop-color="color-mix(in srgb, ${gx} 12%, ${p.surface})"/>
+  </linearGradient></defs>
+  <rect width="960" height="540" fill="url(#g)"/>
   ${shapes[variant]}
-  <rect x="48" y="452" width="${28 + tag.length * 13}" height="40" rx="3" fill="${p.primary}"/>
-  <text x="62" y="479" font-family="sans-serif" font-size="18" font-weight="800" letter-spacing="0.5" fill="${p.primaryInk}">${escapeHtml(tag.toUpperCase())}</text>
 </svg>`;
 }
 function vercelJson() {
