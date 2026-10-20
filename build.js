@@ -315,29 +315,36 @@ function ogImageSvg(pub) {
   const p = pub.brand.palette;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630"><rect width="1200" height="630" fill="${p.bg}"/><rect width="1200" height="14" fill="${p.primary}"/><text x="64" y="300" font-family="Georgia,serif" font-size="72" font-weight="900" fill="${p.ink}">${escapeHtml(pub.name)}</text><text x="64" y="366" font-family="sans-serif" font-size="30" fill="${p.muted}">${escapeHtml(pub.tagline)}</text><text x="64" y="582" font-family="sans-serif" font-size="22" fill="${p.muted}">A publication of ${escapeHtml(network.owner)}</text></svg>`;
 }
-// Deterministic editorial placeholder art per article (no stock imagery available).
-// A soft two-tone field with simple geometry, seeded by the slug so each differs but stays on-brand.
+// Deterministic BOLD editorial cover per article (no stock imagery available): a vivid
+// color-blocked design with the category word set large — looks designed, not a placeholder.
 function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
 function thumbSvg(pub, a) {
   const p = pub.brand.palette;
   const h = hash(a.slug);
   const variant = h % 4;
-  const cx = 150 + (h % 400), cy = 80 + ((h >> 3) % 160);
-  const r = 90 + (h % 70);
-  const tag = (pub.categories.find((c) => c.slug === a.category) || {}).name || "";
-  const shapes = [
-    `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${p.primary}" opacity="0.14"/><circle cx="${900 - cx}" cy="${300 - cy}" r="${r * 0.6}" fill="${p.accent}" opacity="0.18"/>`,
-    `<rect x="${cx - 120}" y="${cy - 40}" width="420" height="420" fill="${p.primary}" opacity="0.12" transform="rotate(18 ${cx} ${cy})"/><circle cx="820" cy="90" r="120" fill="${p.accent}" opacity="0.16"/>`,
-    `<path d="M0,${340 - (h % 120)} Q450,${120 + (h % 100)} 960,${300 - (h % 120)} L960,540 L0,540 Z" fill="${p.primary}" opacity="0.13"/><circle cx="${cx}" cy="110" r="70" fill="${p.accent}" opacity="0.18"/>`,
-    `<rect x="0" y="0" width="480" height="540" fill="${p.primary}" opacity="0.10"/><circle cx="700" cy="${cy}" r="${r}" fill="${p.accent}" opacity="0.16"/>`,
-  ];
-  const gx = h % 2 ? p.primary : p.accent;
+  const headFont = (pub.brand.fonts.heading || "Archivo");
+  const dark = `color-mix(in srgb, ${p.primary} 62%, #000)`;
+  const light = `color-mix(in srgb, ${p.primary} 82%, #fff)`;
+  const tag = ((pub.categories.find((c) => c.slug === a.category) || {}).name || "News").toUpperCase();
+  const words = tag.split(" ").filter(Boolean);
+  // size the big word block to fit
+  const longest = Math.max(...words.map((w) => w.length), 4);
+  const fs = Math.max(58, Math.min(132, Math.floor(1560 / longest)));
+  const startY = 300 - ((words.length - 1) * fs) / 2 + fs / 3;
+  const bigWords = words.map((w, i) =>
+    `<text x="56" y="${startY + i * fs * 1.02}" font-family="${headFont},sans-serif" font-weight="900" font-size="${fs}" letter-spacing="-3" fill="#fff" opacity="0.96">${escapeHtml(w)}</text>`).join("");
+  // background geometry variants (all on-brand, bold)
+  const geo = [
+    `<rect width="960" height="540" fill="${p.primary}"/><polygon points="620,0 960,0 960,540 460,540" fill="${dark}" opacity="0.55"/>`,
+    `<rect width="960" height="540" fill="${p.primary}"/><circle cx="820" cy="110" r="240" fill="${light}" opacity="0.4"/><rect x="0" y="430" width="960" height="110" fill="${dark}" opacity="0.5"/>`,
+    `<rect width="960" height="540" fill="${dark}"/><polygon points="0,0 540,0 220,540 0,540" fill="${p.primary}"/><rect x="600" y="60" width="300" height="300" fill="${light}" opacity="0.35"/>`,
+    `<rect width="960" height="540" fill="${p.primary}"/><g opacity="0.4" fill="${dark}"><rect x="0" y="0" width="960" height="60"/><rect x="0" y="150" width="960" height="60"/><rect x="0" y="300" width="960" height="60"/><rect x="0" y="450" width="960" height="60"/></g>`,
+  ][variant];
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice">
-  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="${p.surface}"/><stop offset="1" stop-color="color-mix(in srgb, ${gx} 12%, ${p.surface})"/>
-  </linearGradient></defs>
-  <rect width="960" height="540" fill="url(#g)"/>
-  ${shapes[variant]}
+  ${geo}
+  <rect x="0" y="0" width="56" height="540" fill="#fff" opacity="0.14"/>
+  ${bigWords}
+  <text x="56" y="56" font-family="${headFont},sans-serif" font-weight="900" font-size="26" letter-spacing="1" fill="#fff" opacity="0.85">${escapeHtml((pub.logo.mark || pub.name).slice(0, 4).toUpperCase())}</text>
 </svg>`;
 }
 function vercelJson() {

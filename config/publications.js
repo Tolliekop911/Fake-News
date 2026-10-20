@@ -32,12 +32,12 @@ export const publications = [
     logo: { mark: "DHN", style: "monogram" },
     brand: {
       palette: {
-        bg: "#ffffff", surface: "#f6f8f9", ink: "#121a24", muted: "#5c6b78",
-        primary: "#0b6e8c", primaryInk: "#ffffff", accent: "#0b6e8c", border: "#e3e8ec",
+        bg: "#ffffff", surface: "#f5f7f8", ink: "#0b1220", muted: "#55606e",
+        primary: "#0e7490", primaryInk: "#ffffff", accent: "#0e7490", border: "#e4e8ec",
       },
-      fonts: { heading: "Source Serif 4", body: "Libre Franklin" },
+      fonts: { heading: "Archivo", body: "Inter" },
       radius: "2px",
-      feel: "clean health-news broadsheet",
+      feel: "bold health-news desk",
     },
     categories: [
       { slug: "ehr", name: "EHR & Records" },
@@ -62,11 +62,11 @@ export const publications = [
     brand: {
       palette: {
         bg: "#ffffff", surface: "#f7f6f4", ink: "#17130f", muted: "#6b6459",
-        primary: "#b5401f", primaryInk: "#ffffff", accent: "#b5401f", border: "#e8e4de",
+        primary: "#e4572e", primaryInk: "#ffffff", accent: "#e4572e", border: "#e8e4de",
       },
       fonts: { heading: "Space Grotesk", body: "Inter" },
-      radius: "6px",
-      feel: "modern startup trade magazine",
+      radius: "4px",
+      feel: "bold startup trade magazine",
     },
     categories: [
       { slug: "founders", name: "Founders" },
@@ -89,12 +89,12 @@ export const publications = [
     logo: { mark: "PT", style: "seal" },
     brand: {
       palette: {
-        bg: "#fbfaf6", surface: "#ffffff", ink: "#1b2a22", muted: "#5d6b62",
-        primary: "#2d6a4a", primaryInk: "#ffffff", accent: "#b07d2b", border: "#e6e1d6",
+        bg: "#ffffff", surface: "#f4f7f4", ink: "#10211a", muted: "#566259",
+        primary: "#1f7a46", primaryInk: "#ffffff", accent: "#1f7a46", border: "#e2e8e3",
       },
-      fonts: { heading: "Fraunces", body: "Newsreader" },
-      radius: "2px",
-      feel: "warm, trustworthy clinical journal",
+      fonts: { heading: "Chivo", body: "Inter" },
+      radius: "3px",
+      feel: "bold clinical practice journal",
     },
     categories: [
       { slug: "ehr-selection", name: "EHR Selection" },
@@ -119,11 +119,11 @@ export const publications = [
     brand: {
       palette: {
         bg: "#ffffff", surface: "#f5f5f8", ink: "#141627", muted: "#5f6276",
-        primary: "#4338ca", primaryInk: "#ffffff", accent: "#4338ca", border: "#e5e5ec",
+        primary: "#5b2be0", primaryInk: "#ffffff", accent: "#5b2be0", border: "#e6e4ee",
       },
-      fonts: { heading: "Sora", body: "IBM Plex Sans" },
-      radius: "6px",
-      feel: "precise, technical, product-review",
+      fonts: { heading: "Sora", body: "Inter" },
+      radius: "4px",
+      feel: "bold technical product-review",
     },
     categories: [
       { slug: "evaluations", name: "Evaluations" },
@@ -147,11 +147,11 @@ export const publications = [
     brand: {
       palette: {
         bg: "#ffffff", surface: "#f4f5f6", ink: "#111827", muted: "#4b5563",
-        primary: "#14506a", primaryInk: "#ffffff", accent: "#14506a", border: "#e4e7ea",
+        primary: "#1152c9", primaryInk: "#ffffff", accent: "#1152c9", border: "#e3e7ec",
       },
-      fonts: { heading: "Lora", body: "Source Sans 3" },
-      radius: "3px",
-      feel: "sober business broadsheet",
+      fonts: { heading: "Archivo", body: "Inter" },
+      radius: "2px",
+      feel: "bold business newsroom",
     },
     categories: [
       { slug: "revenue-cycle", name: "Revenue Cycle" },
